@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perplexity</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="nav-top">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-desktop"></i>
+                    <span>Computer</span>
+                </a>
+
+                <div class="new-thread-container">
+                    <button class="new-thread-btn" id="newThreadBtn" onclick="clearChat()">
+                        <i class="fas fa-plus"></i>
+                        <span>New thread</span>
+                    </button>
+                    <span class="shortcut">Ctrl I</span>
+                </div>
+
+                <a href="#" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-compass"></i>
+                    <span>Discover</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Spaces</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Finance</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <span>More</span>
+                </a>
+            </div>
+
+            <div class="nav-middle">
+                <div class="recent-header">Recent</div>
+                <div class="recent-text">Recent and active threads will appear here.</div>
+            </div>
+
+            <div class="nav-bottom">
+                <div class="upgrade-container">
+                    <button class="upgrade-btn">
+                        <i class="fas fa-arrow-circle-up"></i>
+                        <span>Upgrade plan</span>
+                    </button>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">M</div>
+                    <span class="username">MODUGUMUD...</span>
+                    <i class="fas fa-bell notification-icon"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header bar for main content -->
+            <header class="main-header">
+                <div class="upgrade-banner">
+                    <span class="badge">New</span>
+                    <span>Computer is now available on Pro</span>
+                    <a href="#" class="upgrade-link">Upgrade &rarr;</a>
+                </div>
+                <div class="header-actions">
+                    <button class="header-btn">
+                        <i class="far fa-calendar-alt"></i>
+                        Scheduled
+                        <i class="fas fa-chevron-down small-icon"></i>
+                    </button>
+                    <button class="header-icon-btn">
+                        <i class="fas fa-border-all"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Landing View (shown initially) -->
+            <div class="content-wrapper" id="landingView">
+                <h1 class="logo-text">perplexity</h1>
+
+                <!-- Hidden file input -->
+                <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleFileUpload(event)">
+
+                <div class="search-container">
+                    <div class="search-box">
+                        <!-- File attachment badge (landing) -->
+                        <div class="file-badge-container" id="landingFileBadge" style="display:none">
+                            <div class="file-badge">
+                                <i class="fas fa-file-pdf"></i>
+                                <span class="file-badge-name" id="landingFileName"></span>
+                                <button class="file-badge-remove" onclick="removeFile()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="landingInput" placeholder="Ask anything..." rows="1"
+                            onkeydown="handleLandingKey(event)"></textarea>
+                        <div class="search-actions">
+                            <div class="left-actions">
+                                <button class="action-btn circle" onclick="document.getElementById('fileInput').click()" title="Upload PDF">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="action-btn pill" id="webSearchToggleLanding" onclick="toggleWebSearch(this)">
+                                    <i class="fas fa-globe"></i>
+                                    Web Search: ON
+                                </button>
+                                <button class="action-btn pill entrepreneur-btn" id="entrepreneurToggleLanding" onclick="toggleEntrepreneur()">
+                                    <i class="fas fa-briefcase" style="opacity: 0.5;"></i>
+                                    Founder: OFF
+                                </button>
+                            </div>
+                            <div class="right-actions">
+                                <button class="action-btn text">
+                                    Model
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <button class="action-btn circle">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="action-btn circle submit-btn" onclick="sendFromLanding()">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="try-computer-section">
+                        <div class="section-header">
+                            <i class="fas fa-desktop"></i> Try Computer
+                        </div>
+                        
+                        <div class="tabs">
+                            <button class="tab active"><i class="fas fa-code"></i> Create a prototype</button>
+                            <button class="tab"><i class="far fa-eye"></i> Monitor the situation</button>
+                            <button class="tab"><i class="fas fa-briefcase"></i> Build a business</button>
+                            <button class="tab"><i class="fas fa-list"></i> Organize</button>
+                        </div>
+
+                        <ul class="suggestion-list">
+                            <li onclick="useSuggestion(this)">Create a mobile app prototype for my idea</li>
+                            <li onclick="useSuggestion(this)">Turn my idea into a functional prototype</li>
+                            <li onclick="useSuggestion(this)">Create an internal tool for my team</li>
+                            <li onclick="useSuggestion(this)">Set up an automated email or Slack workflow</li>
+                            <li onclick="useSuggestion(this)">Build a web app with user auth and a database</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat View (shown when conversation starts) -->
+            <div class="chat-view" id="chatView">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Messages will appear here -->
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input-box">
+                        <!-- File attachment badge (chat) -->
+                        <div class="file-badge-container" id="chatFileBadge" style="display:none">
+                            <div class="file-badge">
+                                <i class="fas fa-file-pdf"></i>
+                                <span class="file-badge-name" id="chatFileName"></span>
+                                <button class="file-badge-remove" onclick="removeFile()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="chatInput" placeholder="Ask a follow up..." rows="1"
+                            onkeydown="handleChatKey(event)"></textarea>
+                        <div class="chat-input-actions">
+                            <div class="left-actions">
+                                <button class="action-btn circle" onclick="document.getElementById('fileInput').click()" title="Upload PDF">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="action-btn pill" id="webSearchToggleChat" onclick="toggleWebSearch(this)">
+                                    <i class="fas fa-globe"></i>
+                                    Web Search: ON
+                                </button>
+                                <button class="action-btn pill entrepreneur-btn" id="entrepreneurToggleChat" onclick="toggleEntrepreneur()">
+                                    <i class="fas fa-briefcase" style="opacity: 0.5;"></i>
+                                    Founder: OFF
+                                </button>
+                            </div>
+                            <div class="right-actions">
+                                <button class="action-btn text">
+                                    Model
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <button class="action-btn circle">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="action-btn circle submit-btn" id="chatSubmitBtn" onclick="sendMessage()">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Configure marked for markdown rendering
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            highlight: function(code, lang) {
+                return code;
+            }
+        });
+
+        const landingView = document.getElementById('landingView');
+        const chatView = document.getElementById('chatView');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const landingInput = document.getElementById('landingInput');
+        let isWaiting = false;
+        let uploadedFile = null;
+        let useWebSearch = true;
+        let entrepreneurMode = false;
+
+        // Toggle Entrepreneur Mode
+        function toggleEntrepreneur() {
+            entrepreneurMode = !entrepreneurMode;
+            const text = entrepreneurMode ? 'Founder: ON' : 'Founder: OFF';
+            const icon = entrepreneurMode ? '<i class="fas fa-briefcase"></i>' : '<i class="fas fa-briefcase" style="opacity: 0.5;"></i>';
+            document.getElementById('entrepreneurToggleLanding').innerHTML = `${icon} ${text}`;
+            document.getElementById('entrepreneurToggleChat').innerHTML = `${icon} ${text}`;
+            
+            const btns = [document.getElementById('entrepreneurToggleLanding'), document.getElementById('entrepreneurToggleChat')];
+            btns.forEach(btn => {
+                if (entrepreneurMode) {
+                    btn.style.backgroundColor = "var(--text-primary)";
+                    btn.style.color = "#000";
+                    btn.style.borderColor = "var(--text-primary)";
+                } else {
+                    btn.style.backgroundColor = "transparent";
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-color)";
+                }
+            });
+        }
+
+        // Toggle Web Search
+        function toggleWebSearch() {
+            useWebSearch = !useWebSearch;
+            const text = useWebSearch ? 'Web Search: ON' : 'Web Search: OFF';
+            const icon = useWebSearch ? '<i class="fas fa-globe"></i>' : '<i class="fas fa-globe-americas" style="opacity: 0.5;"></i>';
+            document.getElementById('webSearchToggleLanding').innerHTML = `${icon} ${text}`;
+            document.getElementById('webSearchToggleChat').innerHTML = `${icon} ${text}`;
+            
+            // Sync styles
+            const btns = [document.getElementById('webSearchToggleLanding'), document.getElementById('webSearchToggleChat')];
+            btns.forEach(btn => {
+                if (useWebSearch) {
+                    btn.style.backgroundColor = "var(--hover-bg)";
+                    btn.style.color = "var(--text-primary)";
+                } else {
+                    btn.style.backgroundColor = "transparent";
+                    btn.style.color = "var(--text-secondary)";
+                }
+            });
+        }
+
+
+        // Auto-resize textareas
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        }
+
+        document.querySelectorAll('textarea').forEach(ta => {
+            ta.addEventListener('input', () => autoResize(ta));
+        });
+
+        // Switch to chat view
+        function showChatView() {
+            landingView.style.display = 'none';
+            chatView.style.display = 'flex';
+        }
+
+        // Switch back to landing view
+        function showLandingView() {
+            chatView.style.display = 'none';
+            landingView.style.display = 'flex';
+            landingInput.value = '';
+            chatMessages.innerHTML = '';
+            syncFileBadges();
+        }
+
+        // Handle Enter key on landing textarea
+        function handleLandingKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendFromLanding();
+            }
+        }
+
+        // Handle Enter key on chat textarea
+        function handleChatKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Send message from landing page
+        function sendFromLanding() {
+            const message = landingInput.value.trim();
+            if (!message || isWaiting) return;
+            showChatView();
+            appendMessage('user', message);
+            fetchResponse(message);
+        }
+
+        // Send message from chat view
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message || isWaiting) return;
+            appendMessage('user', message);
+            chatInput.value = '';
+            autoResize(chatInput);
+            fetchResponse(message);
+        }
+
+        // Use a suggestion from the landing page
+        function useSuggestion(el) {
+            const text = el.textContent.trim();
+            showChatView();
+            appendMessage('user', text);
+            fetchResponse(text);
+        }
+
+        // Append a message bubble to the chat
+        function appendMessage(role, content, sources = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', role === 'user' ? 'user-message' : 'ai-message');
+
+            if (role === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-bubble user-bubble">${escapeHTML(content)}</div>
+                    </div>`;
+            } else {
+                let sourcesHtml = '';
+                if (sources && sources.length > 0) {
+                    sourcesHtml = '<div class="sources-container"><div class="sources-label"><i class="fas fa-layer-group"></i> SOURCES</div><div class="sources-carousel">';
+                    sources.forEach((s, idx) => {
+                        const domain = new URL(s.url).hostname.replace('www.','');
+                        let faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+                        sourcesHtml += `
+                            <a href="${escapeHTML(s.url)}" target="_blank" class="source-card" title="${escapeHTML(s.title)}">
+                                <div class="source-card-header">
+                                    <div class="source-favicon" style="background-image: url('${faviconUrl}')"></div>
+                                    <span class="source-domain">${escapeHTML(domain)}</span>
+                                    <span class="source-badge">${idx + 1}</span>
+                                </div>
+                                <div class="source-card-title">${escapeHTML(s.title)}</div>
+                                <div class="source-card-snippet">${escapeHTML(s.snippet || '')}</div>
+                            </a>`;
+                    });
+                    sourcesHtml += '</div></div>';
+                }
+
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        ${sourcesHtml}
+                        <div class="ai-header">
+                            <div class="ai-icon"><i class="fas fa-sparkles"></i></div>
+                            <span class="ai-label">Answer</span>
+                        </div>
+                        <div class="message-bubble ai-bubble">${marked.parse(content)}</div>
+                    </div>`;
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.classList.add('message', 'ai-message');
+            indicator.id = 'typingIndicator';
+            indicator.innerHTML = `
+                <div class="message-content">
+                    <div class="ai-header">
+                        <div class="ai-icon"><i class="fas fa-sparkles"></i></div>
+                        <span class="ai-label">Answer</span>
+                    </div>
+                    <div class="typing-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>`;
+            chatMessages.appendChild(indicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        // Fetch AI response
+        async function fetchResponse(message) {
+            isWaiting = true;
+            showTypingIndicator();
+
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message, use_web_search: useWebSearch, entrepreneur_mode: entrepreneurMode })
+                });
+
+                const data = await res.json();
+                removeTypingIndicator();
+
+                if (data.error) {
+                    appendMessage('assistant', `⚠️ Error: ${data.error}`);
+                } else {
+                    appendMessage('assistant', data.response, data.sources);
+                }
+            } catch (err) {
+                removeTypingIndicator();
+                appendMessage('assistant', `⚠️ Network error: ${err.message}`);
+            }
+
+            isWaiting = false;
+        }
+
+        // Clear chat and go back to landing
+        async function clearChat() {
+            try {
+                await fetch('/clear', { method: 'POST' });
+            } catch (e) { /* ignore */ }
+            uploadedFile = null;
+            syncFileBadges();
+            showLandingView();
+        }
+
+        // ===== FILE UPLOAD / RAG =====
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                alert('Only PDF files are supported.');
+                event.target.value = '';
+                return;
+            }
+
+            // Show uploading state
+            uploadedFile = { name: file.name, status: 'uploading' };
+            syncFileBadges();
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    alert('Upload failed: ' + data.error);
+                    uploadedFile = null;
+                } else {
+                    uploadedFile = {
+                        name: data.filename,
+                        status: 'ready',
+                        chunks: data.chunks,
+                        pages: data.pages
+                    };
+                }
+            } catch (err) {
+                alert('Upload failed: ' + err.message);
+                uploadedFile = null;
+            }
+
+            event.target.value = ''; // reset input
+            syncFileBadges();
+        }
+
+        async function removeFile() {
+            try {
+                await fetch('/remove-file', { method: 'POST' });
+            } catch (e) { /* ignore */ }
+            uploadedFile = null;
+            syncFileBadges();
+        }
+
+        function syncFileBadges() {
+            const landingBadge = document.getElementById('landingFileBadge');
+            const chatBadge = document.getElementById('chatFileBadge');
+            const landingName = document.getElementById('landingFileName');
+            const chatName = document.getElementById('chatFileName');
+
+            if (uploadedFile) {
+                const displayName = uploadedFile.status === 'uploading'
+                    ? uploadedFile.name + ' (uploading...)'
+                    : uploadedFile.name + ' (' + uploadedFile.pages + ' pages)';
+
+                landingBadge.style.display = 'block';
+                chatBadge.style.display = 'block';
+                landingName.textContent = displayName;
+                chatName.textContent = displayName;
+
+                // Add/remove uploading class
+                const allBadges = document.querySelectorAll('.file-badge');
+                allBadges.forEach(b => {
+                    if (uploadedFile.status === 'uploading') {
+                        b.classList.add('uploading');
+                    } else {
+                        b.classList.remove('uploading');
+                    }
+                });
+            } else {
+                landingBadge.style.display = 'none';
+                chatBadge.style.display = 'none';
+            }
+        }
+
+        // Escape HTML to prevent XSS in user messages
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Keyboard shortcut: Ctrl+I for new thread
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'i') {
+                e.preventDefault();
+                clearChat();
+            }
+        });
+    </script>
+</body>
+</html>
